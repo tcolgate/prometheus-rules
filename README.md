@@ -13,3 +13,8 @@ This is intended as a home for collections of useful, reusable prometheus rules.
   - time\_current\_month: 1 == Jan, 12 == December
   - time\_end\_of\_current\_month\_seconds: End of the current month, seconds since Unix Epoch
   - time\_current\_month\_remaining\_seconds: Seconds remaining in the current month
+
+# License
+
+These configs are released under the Apache 2.0 license. All images
+downloaded are subject to their individual licenses.
