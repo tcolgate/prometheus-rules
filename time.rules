@@ -1,0 +1,52 @@
+time_current_year = 1970 + round(vector(time()/  (86400 * 365.242196) -0.5))
+time_start_current_year_seconds = round(vector(time() / (86400 * 365.242196) -0.5)) * (86400 * 365.242196)
+
+time_end_of_current_day_seconds = 86400 - (time() % 86400)
+time_current_day_remaining_seconds = time_end_of_current_day_seconds - time()
+
+time_is_leap_year_bool = (time_current_year % 4 == bool 0 ) and ((time_current_year % 400 == bool 0 ) or  (time_current_year % 100 != bool 0 ))
+
+time_end_current_year_seconds = time_start_current_year_seconds + (365 * 86400) + (time_is_leap_year_bool * 86400)
+
+time_end_of_current_jan_seconds = time_start_current_year_seconds + (31 * 86400)
+time_end_of_current_feb_seconds = time_end_of_current_jan_seconds + (28 * 86400) + (time_is_leap_year_bool * 86400)
+time_end_of_current_mar_seconds = time_end_of_current_feb_seconds + (31 * 86400)
+time_end_of_current_apr_seconds = time_end_of_current_mar_seconds + (30 * 86400)
+time_end_of_current_may_seconds = time_end_of_current_apr_seconds + (31 * 86400)
+time_end_of_current_jun_seconds = time_end_of_current_may_seconds + (31 * 86400)
+time_end_of_current_jul_seconds = time_end_of_current_jun_seconds + (30 * 86400)
+time_end_of_current_aug_seconds = time_end_of_current_jul_seconds + (31 * 86400)
+time_end_of_current_sep_seconds = time_end_of_current_aug_seconds + (30 * 86400)
+time_end_of_current_oct_seconds = time_end_of_current_sep_seconds + (31 * 86400)
+time_end_of_current_nov_seconds = time_end_of_current_oct_seconds + (30 * 86400)
+time_end_of_current_dec_seconds = time_end_of_current_nov_seconds + (31 * 86400)
+
+time_current_month = (
+  1 +
+  (time() > bool time_end_of_current_jan_seconds) +
+  (time() > bool time_end_of_current_feb_seconds) +
+  (time() > bool time_end_of_current_mar_seconds) +
+  (time() > bool time_end_of_current_apr_seconds) +
+  (time() > bool time_end_of_current_may_seconds) +
+  (time() > bool time_end_of_current_jun_seconds) +
+  (time() > bool time_end_of_current_jul_seconds) +
+  (time() > bool time_end_of_current_aug_seconds) +
+  (time() > bool time_end_of_current_sep_seconds) +
+  (time() > bool time_end_of_current_oct_seconds) +
+  (time() > bool time_end_of_current_nov_seconds))
+
+time_end_of_current_month_seconds = (
+  ((time_current_month == bool 1) * time_end_of_current_jan_seconds) +
+  ((time_current_month == bool 2) * time_end_of_current_feb_seconds) +
+  ((time_current_month == bool 3) * time_end_of_current_mar_seconds) +
+  ((time_current_month == bool 4) * time_end_of_current_apr_seconds) +
+  ((time_current_month == bool 5) * time_end_of_current_may_seconds) +
+  ((time_current_month == bool 6) * time_end_of_current_jun_seconds) +
+  ((time_current_month == bool 7) * time_end_of_current_jul_seconds) +
+  ((time_current_month == bool 8) * time_end_of_current_aug_seconds) +
+  ((time_current_month == bool 9) * time_end_of_current_sep_seconds) +
+  ((time_current_month == bool 10) * time_end_of_current_oct_seconds) +
+  ((time_current_month == bool 11) * time_end_of_current_nov_seconds) +
+  ((time_current_month == bool 12) * time_end_of_current_dec_seconds))
+
+time_current_month_remaining_seconds = time_end_of_current_month_seconds - time()
