@@ -1,3 +1,5 @@
+time_adjust_leap_seconds_since_1972_count = 26
+
 time_current_year = 1970 + round(vector(time()/  (86400 * 365.242196) -0.5))
 time_start_current_year_seconds = round(vector(time() / (86400 * 365.242196) -0.5)) * (86400 * 365.242196)
 
@@ -50,3 +52,7 @@ time_end_of_current_month_seconds = (
   ((time_current_month == bool 12) * time_end_of_current_dec_seconds))
 
 time_current_month_remaining_seconds = time_end_of_current_month_seconds - time()
+
+time_current_weekday = 1 + (((time() / 86400) -4) % 7)
+time_is_weekday_bool = time_current_day < bool 5
+
