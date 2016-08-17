@@ -1,0 +1,191 @@
+Prometheus Rules - For Fun & Profit (& Loss)
+18 Aug 2016
+Tags: prometheus
+
+Tristan Colgate-McFarlane
+Infrastructure Engineer - Qubit
+tcolgate@gmail.com
+@t_colgate
+
+* What I do
+
+- Programmer
+- Monitoring nut
+- Developer and sole community member/user of Guile-SNMP
+
+* What are Qubit doing with Prometheus?
+
+- Large and varied estate (physical + (AWS + GCE) * (Mesos + K8s))
+- Multiple autonomous development teams
+- Trying to bring more business focused monitoring.
+
+* AWS billing is difficult.
+
+- Dozens of products
+- Multiple cost centers under one account
+- EC2 - Normal vs reserved vs spot instances
+- https://github.com/QubitProducts/aws_audit_exporter
+- https://github.com/prometheus/cloudwatch_exporter
+
+* CloudWatch - AWS/Billing
+
+- Updated every 4 hours
+- Broken down by product and cost cetner
+- Estimate of cost to date since the start of the month
+
+  aws_billing_
+
+* CloudWatch - AWS/Billing - cont.
+
+Great News
+
+- Good estimate
+- Fine grained enough to spot issues
+- But can we take it further?
+
+* CloudWatch - AWS/Billing - cont.
+
+Great News
+
+- Good estimate
+- Fine grained enough to spot issues
+- But can we take it further?
+- What will my bill be at the end of the month?
+
+* UTC, Unix epoch and time()
+
+- prometheus gives us _time()_ since Unix epoch
+- No UTC support
+
+* Up front truths
+
+- Not accurate (some easily fixable some not)
+- Leap seconds are a thing
+
+* time_end_of_current_day_seconds
+
+RRD taught me
+
+- 86400 seconds in a day
+
+End of the current day in seconds
+
+  time_end_of_current_day_seconds = 86400 - (time() % 86400)
+
+So how many seconds are left today?
+
+  time_current_day_remaining_seconds = 
+    time_end_of_current_day_seconds - time()
+
+* time_current_year
+
+Which year is it now?
+
+- 86400 seconds in a day
+- 365.242196 days in a year
+
+  time_current_year = 
+    1970 + round(vector(time()/  (86400 * 365.242196) -0.5))
+
+Should round this down to the nearest 86400, about 3 hours off of midnight now
+
+*note* possibly just got lucky that this works in 2016
+
+* time_start_current_year_seconds
+
+Epoch time at the start of the year?
+
+  time_start_current_year_seconds = 
+    round(vector(time() / (86400 * 365.242196) -0.5)) * (86400 * 365.242196)
+
+* time_is_leap_year_bool
+
+Leap year?
+Is the current year
+- divisible by 4
+- but not 100
+- unless 400
+
+  time_is_leap_year_bool =
+    (time_current_year % 4 == bool 0 ) and
+      ((time_current_year % 400 == bool 0 ) or
+      (time_current_year % 100 != bool 0 ))
+
+* time_end_current_year_seconds
+
+  time_end_current_year_seconds =
+    time_start_current_year_seconds + (365 * 86400) +
+    (time_is_leap_year_bool * 86400)
+
+* time_end_of_current_MONTH_seconds
+
+  time_end_of_current_jan_seconds =
+    time_start_current_year_seconds + (31 * 86400)
+  time_end_of_current_feb_seconds =
+    time_end_of_current_jan_seconds + (28 * 86400) +
+    (time_is_leap_year_bool * 86400)
+  time_end_of_current_mar_seconds =
+    time_end_of_current_feb_seconds + (31 * 86400)
+  ...
+  time_end_of_current_dec_seconds = 
+    time_end_of_current_nov_seconds + (31 * 86400)
+
+* time_current_month
+
+Which month is it?
+
+  time_current_month = (
+    1 +
+    (time() > bool time_end_of_current_jan_seconds) +
+    (time() > bool time_end_of_current_feb_seconds) +
+    ....
+    (time() > bool time_end_of_current_nov_seconds))
+
+* time_end_of_current_month_seconds
+
+  time_end_of_current_month_seconds = (
+    ((time_current_month == bool 1) * time_end_of_current_jan_seconds) +
+    ((time_current_month == bool 2) * time_end_of_current_feb_seconds) +
+   ...
+    ((time_current_month == bool 12) * time_end_of_current_dec_seconds))
+
+* time_current_month_remaining_seconds
+
+How long is left in the current month?
+
+  time_current_month_remaining_seconds =
+    time_end_of_current_month_seconds - time()
+
+* And finally...
+
+Current cost
+
+Last months cost
+
+End of this months cost
+
+Delta
+
+* And finally...
+
+Current cost
+
+Last months cost
+
+End of this months cost
+
+Delta ... profit! Or loss!
+
+* Other possibilities
+
+Want higher priority alerts on the weekend?
+
+  time_current_weekday = 1 + (((time() / 86400) -4) % 7)
+  time_is_weekday_bool = time_current_day < bool 5
+
+* Improvements
+
+- Better maths
+- Manually expand rules avoids evaluation delay
+- Can't backfill rules
+- Could use a utc_exporter... TBC
