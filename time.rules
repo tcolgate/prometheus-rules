@@ -3,7 +3,7 @@ time_adjust_leap_seconds_since_1972_count = 26
 time_current_year = 1970 + round(vector(time()/  (86400 * 365.242196) -0.5))
 time_start_current_year_seconds = round(vector(time() / (86400 * 365.242196) -0.5)) * (86400 * 365.242196)
 
-time_end_of_current_day_seconds = 86400 - (time() % 86400)
+time_end_of_current_day_seconds = floor(vector(time() / 86400) +1) * 86400
 time_current_day_remaining_seconds = time_end_of_current_day_seconds - time()
 
 time_is_leap_year_bool = (time_current_year % 4 == bool 0 ) and ((time_current_year % 400 == bool 0 ) or  (time_current_year % 100 != bool 0 ))

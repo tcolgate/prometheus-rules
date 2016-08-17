@@ -70,11 +70,11 @@ RRD taught me
 
 End of the current day in seconds
 
-  time_end_of_current_day_seconds = 86400 - (time() % 86400)
+  time_end_of_current_day_seconds = floor(vector(time() / 86400) +1) * 86400
 
 So how many seconds are left today?
 
-  time_current_day_remaining_seconds = 
+  time_current_day_remaining_seconds =
     time_end_of_current_day_seconds - time()
 
 * time_current_year
@@ -84,7 +84,7 @@ Which year is it now?
 - 86400 seconds in a day
 - 365.242196 days in a year
 
-  time_current_year = 
+  time_current_year =
     1970 + round(vector(time()/  (86400 * 365.242196) -0.5))
 
 Should round this down to the nearest 86400, about 3 hours off of midnight now
@@ -95,7 +95,7 @@ Should round this down to the nearest 86400, about 3 hours off of midnight now
 
 Epoch time at the start of the year?
 
-  time_start_current_year_seconds = 
+  time_start_current_year_seconds =
     round(vector(time() / (86400 * 365.242196) -0.5)) * (86400 * 365.242196)
 
 * time_is_leap_year_bool
