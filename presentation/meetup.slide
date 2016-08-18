@@ -33,15 +33,9 @@ tcolgate@gmail.com
 - Broken down by product and cost cetner
 - Estimate of cost to date since the start of the month
 
-  aws_billing_
+  aws_billing_estimated_charges_average
 
-* CloudWatch - AWS/Billing - cont.
-
-Great News
-
-- Good estimate
-- Fine grained enough to spot issues
-- But can we take it further?
+.image graph.png
 
 * CloudWatch - AWS/Billing - cont.
 
@@ -160,21 +154,30 @@ How long is left in the current month?
 
 Current cost
 
-Last months cost
-
-End of this months cost
-
-Delta
-
-* And finally...
-
-Current cost
+  sum(aws_billing_estimated_charges_average)
 
 Last months cost
 
+  sum(max_over_time(aws_billing_estimated_charges_average[31d]))
+
 End of this months cost
+
+  sum(
+    predict_linear(
+      aws_billing_estimated_charges_average[2d],
+      scalar(time_current_month_remaining_seconds)))
 
 Delta ... profit! Or loss!
+
+  sum(
+    predict_linear(
+      aws_billing_estimated_charges_average[2d],
+      scalar(time_current_month_remaining_seconds))) -
+  sum(max_over_time(aws_billing_estimated_charges_average[31d]))
+
+* Result
+
+.image result.png
 
 * Other possibilities
 
