@@ -30,7 +30,7 @@ tcolgate@gmail.com
 * CloudWatch - AWS/Billing
 
 - Updated every 4 hours
-- Broken down by product and cost cetner
+- Broken down by product and cost center
 - Estimate of cost to date since the start of the month
 
   aws_billing_estimated_charges_average
