@@ -155,11 +155,11 @@ Current cost
 
   sum(aws_billing_estimated_charges_average)
 
-Last months cost
+Last month's cost
 
   sum(max_over_time(aws_billing_estimated_charges_average[31d]))
 
-End of this months cost
+End of this month's cost
 
   sum(
     predict_linear(
@@ -187,7 +187,8 @@ Want higher priority alerts on the weekend?
 
 * Improvements
 
-- Better maths
-- Manually expand rules avoids evaluation delay
+- Better maths for start of year
+- Include leap seconds (26 since 1970)
+- It takes many evaluation_intervals to populate values, we could manually expand the rules to avoid the delay
 - Can't backfill rules
-- Could use a utc_exporter... TBC
+- Could create a utc_exporter... TBC
