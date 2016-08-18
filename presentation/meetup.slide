@@ -48,7 +48,7 @@ Great News
 
 * UTC, Unix epoch and time()
 
-- prometheus gives us _time()_ since Unix epoch
+- Prometheus gives us _time()_ since Unix epoch
 - No UTC support
 
 * Up front truths
@@ -81,8 +81,6 @@ Which year is it now?
   time_current_year =
     1970 + round(vector(time()/  (86400 * 365.242196) -0.5))
 
-Should round this down to the nearest 86400, about 3 hours off of midnight now
-
 *note* possibly just got lucky that this works in 2016
 
 * time_start_current_year_seconds
@@ -92,10 +90,17 @@ Epoch time at the start of the year?
   time_start_current_year_seconds =
     round(vector(time() / (86400 * 365.242196) -0.5)) * (86400 * 365.242196)
 
+and the end?
+
+  time_end_current_year_seconds =
+    time_start_current_year_seconds + (365 * 86400) +
+    (time_is_leap_year_bool * 86400)
+
+Should round these down to the nearest 86400, about 3 hours off of midnight now
+
 * time_is_leap_year_bool
 
-Leap year?
-Is the current year
+Is this a leap year?
 - divisible by 4
 - but not 100
 - unless 400
@@ -104,12 +109,6 @@ Is the current year
     (time_current_year % 4 == bool 0 ) and
       ((time_current_year % 400 == bool 0 ) or
       (time_current_year % 100 != bool 0 ))
-
-* time_end_current_year_seconds
-
-  time_end_current_year_seconds =
-    time_start_current_year_seconds + (365 * 86400) +
-    (time_is_leap_year_bool * 86400)
 
 * time_end_of_current_MONTH_seconds
 
@@ -167,7 +166,7 @@ End of this months cost
       aws_billing_estimated_charges_average[2d],
       scalar(time_current_month_remaining_seconds)))
 
-Delta ... profit! Or loss!
+Delta ... profit! Or loss?
 
   sum(
     predict_linear(
