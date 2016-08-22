@@ -88,7 +88,8 @@ Which year is it now?
 Epoch time at the start of the year?
 
   time_start_current_year_seconds =
-    round(vector(time() / (86400 * 365.242196) -0.5)) * (86400 * 365.242196)
+    (floor(vector(time() / (86400) / 365)) * 86400 * 365) +
+    (floor(vector(((time()) + (86400 * 365))/ (86400) / (365 * 4))) * 86400)
 
 and the end?
 
