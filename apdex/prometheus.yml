@@ -1,0 +1,16 @@
+# my global config
+global:
+  scrape_interval:     5s
+  evaluation_interval: 1s
+
+rule_files:
+- "apdex.yaml"
+
+scrape_configs:
+- job_name: ourapp
+  scheme: http
+
+  static_configs:
+  - targets: ['localhost:8080']
+
+
