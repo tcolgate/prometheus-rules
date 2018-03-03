@@ -4,6 +4,9 @@ time_since_epoch_days = floor(vector(time() / (86400 * 365)))
 
 time_current_year = 1970 + round(vector(time()/  (86400 * 365.242196) -0.5))
 time_start_current_year_seconds = (floor(vector(time() / (86400) / 365)) * 86400 * 365) + (floor(vector(((time()) + (86400 * 365))/ (86400) / (365 * 4)))   * 86400)
+# The above rule is accurate up to 2099, the following rule will make this accurate to 2399
+# (floor(vector(time() / (86400) / 365)) * 86400 * 365) + (floor(vector(((time()) + (86400 * 365))/ (86400) / (365 * 4))) * 86400) - (floor(vector(((time()) - (86400 * 365 * 69))/ (86400) / (365.25 * 100))) * 86400)
+
 
 time_end_of_current_day_seconds = floor(vector(time() / 86400) +1) * 86400
 time_current_day_remaining_seconds = time_end_of_current_day_seconds - time()
